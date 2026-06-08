@@ -23,4 +23,6 @@ Manne ke bera
 * make gdb         // executes qemu, vnc and gdb
 
 
+### References
 
+* https://github.com/tuhdo/os01/blob/master/Operating_Systems_From_0_to_1.pdf
