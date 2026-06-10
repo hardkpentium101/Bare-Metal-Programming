@@ -1,4 +1,6 @@
-org 0x7c00
+;org 0x7C00
+global start
+section .text
 bits 16
 start: jmp boot
 
@@ -8,7 +10,7 @@ boot:
 cli ; no int
 cld ; init
 
-mov ax, 0x50
+mov ax, 0x50 ; PA = ES*N + BX -> 500 -> e_entry -> 518 -> .text-> 600
 
 ;set buffer  
 mov es, ax
@@ -22,7 +24,7 @@ mov dl, 0 ; drive num
 
 mov ah, 0x02 ; func to read sector
 int 0x13 ; execute
-jmp 0x50:0x0 ; jmp and execute sector
+jmp [500h + 18h] ; jmp and execute sector
 
 hlt
 

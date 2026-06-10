@@ -1,6 +1,6 @@
 BUILD_DIR=build
 BOOTLOADER=$(BUILD_DIR)/bootloader/bootloader.o
-OS=$(BUILD_DIR)/os/sample.o
+OS=$(BUILD_DIR)/os/os.o
 DISK_IMG=$(BUILD_DIR)/disk.img
 
 all:bootdisk
@@ -21,13 +21,12 @@ os:
 	make -C os
 
 qemu:
-	pkill -f qemu
 	qemu-system-i386 -machine q35 -fda $(DISK_IMG) -gdb tcp::26000 -S -daemonize
 
 bootdisk: bootloader os
 	dd if=/dev/zero of=$(DISK_IMG) bs=512 count=2880
 	dd conv=notrunc if=$(BOOTLOADER) of=$(DISK_IMG) seek=0 count=1
-	dd conv=notrunc if=$(OS) of=$(DISK_IMG) seek=1 count=1
+	dd conv=notrunc if=$(OS) of=$(DISK_IMG) seek=1 count=$$(( ($(shell stat --print="%s" $(OS)) + 511)/512))
 
 vnc: qemu
 	vncviewer localhost:5900 > /dev/null 2>&1 &
